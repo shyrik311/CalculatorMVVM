@@ -4,5 +4,5 @@ interface CalculatorView {
 
     fun showResult(result: String)
     fun showError()
-    fun workSpace(value: String)
+    fun updateWorkSpace(value: String)
 }

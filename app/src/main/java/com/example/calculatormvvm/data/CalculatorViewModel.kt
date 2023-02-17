@@ -6,11 +6,11 @@ import com.example.calculatormvvm.Calculator
 import com.example.calculatormvvm.WorkSpace
 import com.example.calculatormvvm.ui.CalculatorView
 
-class CalculatorViewModel(private var calculator: Calculator, private var view: CalculatorView) {
+class CalculatorViewModel(private val calculator: Calculator, private var view: CalculatorView) {
     private var workSpace = WorkSpace()
     private var clearAll = Calculator()
-    private val _expression = MutableLiveData<String>()
-    val expression: LiveData<String> = _expression
+    private val expression = MutableLiveData<String>()
+    val expressionLiveData: LiveData<String> = expression
 
     private val _result = MutableLiveData<String>()
     val result: LiveData<String> = _result
@@ -18,8 +18,9 @@ class CalculatorViewModel(private var calculator: Calculator, private var view: 
     private val _error = MutableLiveData<Boolean>()
     val error: LiveData<Boolean> = _error
 
+
     fun number(value: String) {
-        _expression.value = workSpace.addToWorkSpace(value)
+        expression.value = workSpace.addToWorkSpace(value)
     }
 
     fun operator(operator: String) {
@@ -28,12 +29,12 @@ class CalculatorViewModel(private var calculator: Calculator, private var view: 
             "*" -> "×"
             else -> operator
         }
-        _expression.value = workSpace.addToWorkSpace(replacementOperator)
+        expression.value = workSpace.addToWorkSpace(replacementOperator)
     }
 
     fun parentheses(isLeft: Boolean) {
         val bracket = if (isLeft) "(" else ")"
-        _expression.value = workSpace.addToWorkSpace(bracket)
+        expression.value = workSpace.addToWorkSpace(bracket)
     }
 
     fun equals() {
@@ -50,7 +51,7 @@ class CalculatorViewModel(private var calculator: Calculator, private var view: 
     fun clearAll() {
         clearAll = Calculator()
         workSpace = WorkSpace()
-        view.workSpace("")
+        view.updateWorkSpace("")
         view.showResult("")
     }
 
@@ -60,7 +61,7 @@ class CalculatorViewModel(private var calculator: Calculator, private var view: 
         if (currentExpression.isNotEmpty()) {
             val newExpression = currentExpression.substring(0, currentExpression.length - 1)
             workSpace.setExpression(newExpression)
-            _expression.value = newExpression
+            expression.value = newExpression
         }
     }
 }

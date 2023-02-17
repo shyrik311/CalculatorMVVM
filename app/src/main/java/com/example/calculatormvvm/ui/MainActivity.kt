@@ -8,7 +8,7 @@ import com.example.calculatormvvm.R
 import com.example.calculatormvvm.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity(), CalculatorView {
-    private lateinit var presenter: CalculatorViewModel
+    private lateinit var calculatorPresenter: CalculatorViewModel
     private lateinit var binding: ActivityMainBinding
     private var isLeftBracket = true
 
@@ -20,45 +20,44 @@ class MainActivity : AppCompatActivity(), CalculatorView {
         val view = binding.root
         setContentView(view)
 
-        val calculator = Calculator()
-        presenter = CalculatorViewModel(calculator, this)
+        calculatorPresenter = CalculatorViewModel(Calculator(), this)
         setListeners()
         observeData()
     }
 
     private fun setListeners() {
-        binding.clearAll.setOnClickListener { presenter.clearAll() }
-        binding.one.setOnClickListener { presenter.number("1") }
-        binding.two.setOnClickListener { presenter.number("2") }
-        binding.three.setOnClickListener { presenter.number("3") }
-        binding.four.setOnClickListener { presenter.number("4") }
-        binding.five.setOnClickListener { presenter.number("5") }
-        binding.six.setOnClickListener { presenter.number("6") }
-        binding.seven.setOnClickListener { presenter.number("7") }
-        binding.eight.setOnClickListener { presenter.number("8") }
-        binding.nine.setOnClickListener { presenter.number("9") }
-        binding.zero.setOnClickListener { presenter.number("0") }
-        binding.dot.setOnClickListener { presenter.number(".") }
-        binding.plus.setOnClickListener { presenter.operator("+") }
-        binding.minus.setOnClickListener { presenter.operator("-") }
-        binding.div.setOnClickListener { presenter.operator("/") }
-        binding.multiply.setOnClickListener { presenter.operator("*") }
-        binding.equals.setOnClickListener { presenter.equals() }
+        binding.clearAll.setOnClickListener { calculatorPresenter.clearAll() }
+        binding.one.setOnClickListener { calculatorPresenter.number("1") }
+        binding.two.setOnClickListener { calculatorPresenter.number("2") }
+        binding.three.setOnClickListener { calculatorPresenter.number("3") }
+        binding.four.setOnClickListener { calculatorPresenter.number("4") }
+        binding.five.setOnClickListener { calculatorPresenter.number("5") }
+        binding.six.setOnClickListener { calculatorPresenter.number("6") }
+        binding.seven.setOnClickListener { calculatorPresenter.number("7") }
+        binding.eight.setOnClickListener { calculatorPresenter.number("8") }
+        binding.nine.setOnClickListener { calculatorPresenter.number("9") }
+        binding.zero.setOnClickListener { calculatorPresenter.number("0") }
+        binding.dot.setOnClickListener { calculatorPresenter.number(".") }
+        binding.plus.setOnClickListener { calculatorPresenter.operator("+") }
+        binding.minus.setOnClickListener { calculatorPresenter.operator("-") }
+        binding.div.setOnClickListener { calculatorPresenter.operator("/") }
+        binding.multiply.setOnClickListener { calculatorPresenter.operator("*") }
+        binding.equals.setOnClickListener { calculatorPresenter.equals() }
         binding.parentheses.setOnClickListener {
-            presenter.parentheses(isLeftBracket)
+            calculatorPresenter.parentheses(isLeftBracket)
             isLeftBracket = !isLeftBracket
         }
-        binding.backSpace.setOnClickListener { presenter.backspace() }
+        binding.backSpace.setOnClickListener { calculatorPresenter.backspace() }
     }
 
     private fun observeData() {
-        presenter.expression.observe(this) {
-            binding.workSpace.text = it
+        calculatorPresenter.expressionLiveData.observe(this) { value ->
+            binding.workSpace.text = value
         }
-        presenter.result.observe(this) {
+        calculatorPresenter.result.observe(this) {
             binding.resultShow.text = it
         }
-        presenter.error.observe(this) {
+        calculatorPresenter.error.observe(this) {
             if (it) {
                 binding.resultShow.text = getString(R.string.error)
             }
@@ -69,7 +68,7 @@ class MainActivity : AppCompatActivity(), CalculatorView {
         binding.resultShow.text = result
     }
 
-    override fun workSpace(value: String) {
+    override fun updateWorkSpace(value: String) {
         binding.workSpace.text = value
     }
 
